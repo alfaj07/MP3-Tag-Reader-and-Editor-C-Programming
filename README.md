@@ -24,6 +24,7 @@ A modular C-based command-line interface (CLI) utility designed to inspect, pars
   - [Tag Editing Mechanism](#tag-editing-mechanism)
 - [Error Handling](#error-handling)
 - [References](#references)
+- [License](#license)
 
 ---
 
@@ -225,6 +226,12 @@ Because changing the contents of a frame often alters its size:
 
 ## References
 
-- [ID3v2.3.0 Standard Specification (id3.org)](http://www.id3.org/id3v2.3.0.txt)
-- [ID3 Tag Wikipedia Overview](http://en.wikipedia.org/wiki/ID3)
-- [MPEG Audio Framing Information (ISO/IEC 11172-3)](https://www.iso.org/)
+- [ID3v2.3.0 Informal Standard](https://id3.org/id3v2.3.0) — ID3v2.3.0 Specification and Frame Definitions
+- [ID3v1 / ID3v1.1 Specification](https://id3.org/ID3v1) — Official ID3v1 Structure and Genre Mappings
+- [ISO/IEC 11172-3](https://www.iso.org/standard/22412.html) — Information technology — Coding of moving pictures and associated audio for digital storage media at up to about 1,5 Mbit/s — Part 3: Audio
+
+---
+
+## License
+
+This project is licensed under the [MIT License](LICENSE) — see the [LICENSE](LICENSE) file for details.

@@ -40,32 +40,50 @@ Status read_mp3_tags(MP3Reader *reader) {
     return e_failure;
 }
 
+static void print_tag_row(const char *name, const char *value) {
+    printf("| %-17s | %-59s |\n", name, (value != NULL && value[0] != '\0') ? value : "");
+}
+
 /* Display formatted metadata table to console */
 void display_mp3_tags(const MP3Reader *reader) {
     if (reader == NULL) {
         return;
     }
 
-    printf("==================================================\n");
-    printf("              MP3 TAG DETAILS                     \n");
-    printf("==================================================\n");
-    printf("File: %s\n", reader->filename);
+    const char *border_full = "+---------------------------------------------------------------------------------+";
+    const char *border_table = "+-------------------+-------------------------------------------------------------+";
+
+    printf("%s\n", border_full);
+    printf("|                              SELECTED VIEW DETAILS                              |\n");
+    printf("%s\n", border_full);
+    printf("|                                                                                 |\n");
+    if (reader->tag_version == TAG_ID3V1 || reader->tag_version == TAG_ID3V1_1) {
+        printf("|                   MP3 TAG READER AND EDITOR FOR ID3v1                            |\n");
+    } else {
+        printf("|                   MP3 TAG READER AND EDITOR FOR ID3v2                            |\n");
+    }
+    printf("|                                                                                 |\n");
+    printf("%s\n", border_table);
+    printf("| TAG NAME          | TAG VALUE                                                   |\n");
+    printf("%s\n", border_table);
 
     if (reader->tag_version == TAG_ID3V2_3) {
-        printf("Version: ID3v2.3\n");
-        printf("--------------------------------------------------\n");
-        display_id3v2_tag(&reader->v2_tag);
-    } else if (reader->tag_version == TAG_ID3V1_1) {
-        printf("Version: ID3v1.1\n");
-        printf("--------------------------------------------------\n");
-        display_id3v1_tag(&reader->v1_tag);
-    } else if (reader->tag_version == TAG_ID3V1) {
-        printf("Version: ID3v1.0\n");
-        printf("--------------------------------------------------\n");
-        display_id3v1_tag(&reader->v1_tag);
+        print_tag_row("TITLE", reader->v2_tag.title);
+        print_tag_row("ARTIST", reader->v2_tag.artist);
+        print_tag_row("ALBUM", reader->v2_tag.album);
+        print_tag_row("YEAR", reader->v2_tag.year);
+        print_tag_row("MUSIC", reader->v2_tag.genre);
+        print_tag_row("COMMENT", reader->v2_tag.comment);
+    } else if (reader->tag_version == TAG_ID3V1 || reader->tag_version == TAG_ID3V1_1) {
+        print_tag_row("TITLE", reader->v1_tag.title);
+        print_tag_row("ARTIST", reader->v1_tag.artist);
+        print_tag_row("ALBUM", reader->v1_tag.album);
+        print_tag_row("YEAR", reader->v1_tag.year);
+        print_tag_row("MUSIC", get_genre_name(reader->v1_tag.genre));
+        print_tag_row("COMMENT", reader->v1_tag.comment);
     }
 
-    printf("==================================================\n");
+    printf("%s\n", border_table);
 }
 
 /* Close file pointer */
@@ -76,21 +94,46 @@ void close_reader(MP3Reader *reader) {
     }
 }
 
-/* Print help and usage menu */
-void print_help(void) {
-    printf("usage: mp3tag [file.mp3]\n");
-    printf("       mp3tag -[tTaAycg] \"value\" file1\n");
-    printf("       mp3tag -v\n\n");
-    printf("Options:\n");
-    printf("  -t   Modifies a Title tag\n");
-    printf("  -T   Modifies a Track tag\n");
-    printf("  -a   Modifies an Artist tag\n");
-    printf("  -A   Modifies an Album tag\n");
-    printf("  -y   Modifies a Year tag\n");
-    printf("  -c   Modifies a Comment tag\n");
-    printf("  -g   Modifies a Genre tag\n");
-    printf("  -h   Displays this help info\n");
-    printf("  -v   Prints version info\n");
+/* Helper to print centered text within borders */
+static void print_centered(const char *text, int width) {
+    int len = (int)strlen(text);
+    int pad = (width - len) / 2;
+    int pad_right = width - len - pad;
+    printf("|%*s%s%*s|\n", pad, "", text, pad_right, "");
+}
+
+/* Print help and usage menu with boxed styling */
+void print_help(const char *error_msg) {
+    const char *border = "+-------------------------------------------------------------------------------+";
+    printf("%s\n", border);
+    if (error_msg != NULL) {
+        print_centered(error_msg, 79);
+    } else {
+        print_centered("HELP", 79);
+    }
+    printf("%s\n", border);
+    printf("|                                                                               |\n");
+    printf("| USAGE:                                                                        |\n");
+    printf("|   mp3tag -v [file.mp3]                                                        |\n");
+    printf("|   mp3tag -[tTaAycg] \"value\" file1                                             |\n");
+    printf("|   mp3tag -V                                                                   |\n");
+    printf("|                                                                               |\n");
+    printf("%s\n\n", border);
+
+    printf("%s\n", border);
+    printf("|                                   OPTIONS:                                    |\n");
+    printf("%s\n", border);
+    printf("|   -t    Modifies a Title tag                                                  |\n");
+    printf("|   -T    Modifies a Track tag                                                  |\n");
+    printf("|   -a    Modifies an Artist tag                                                |\n");
+    printf("|   -A    Modifies an Album tag                                                 |\n");
+    printf("|   -y    Modifies a Year tag                                                   |\n");
+    printf("|   -c    Modifies a Comment tag                                                |\n");
+    printf("|   -g    Modifies a Genre tag                                                  |\n");
+    printf("|   -h    Displays this help info                                               |\n");
+    printf("|   -v    Views tag details                                                     |\n");
+    printf("|   -V    Prints version info                                                   |\n");
+    printf("%s\n", border);
 }
 
 /* Print version info */

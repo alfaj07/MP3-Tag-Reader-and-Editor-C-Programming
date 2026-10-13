@@ -114,9 +114,9 @@ static void extract_comment(const char *data, unsigned int size, char *dest, int
     idx++; /* skip null terminator */
 
     if (idx < size) {
-        snprintf(dest, max_len, "[Lang: %s] %.*s", lang, (int)(size - idx), data + idx);
+        snprintf(dest, max_len, "%.*s", (int)(size - idx), data + idx);
     } else {
-        snprintf(dest, max_len, "[Lang: %s]", lang);
+        dest[0] = '\0';
     }
 }
 

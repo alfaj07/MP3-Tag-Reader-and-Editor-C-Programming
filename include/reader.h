@@ -29,7 +29,7 @@ void display_mp3_tags(const MP3Reader *reader);
 void close_reader(MP3Reader *reader);
 
 /* Display help menu */
-void print_help(void);
+void print_help(const char *error_msg);
 
 /* Display application version */
 void print_version(void);

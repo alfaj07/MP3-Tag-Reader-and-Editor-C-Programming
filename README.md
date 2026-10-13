@@ -135,14 +135,16 @@ make clean
 
 ```bash
 # View metadata
-mp3tag <file.mp3>
+mp3tag -v <file.mp3>
+# (also supports: mp3tag <file.mp3>)
 
 # Modify metadata
-mp3tag -[tTaAycg] "value" <file.mp3>
+mp3tag -e -[tTaAycgm] "value" <file.mp3>
+# (also supports: mp3tag -e-[flag] "value" <file.mp3> or mp3tag -[flag] "value" <file.mp3>)
 
 # Information options
 mp3tag -h | --help
-mp3tag -v | -V
+mp3tag -V
 ```
 
 ### Options Reference
@@ -155,9 +157,11 @@ mp3tag -v | -V
 | `-A` | `<string>` | Modifies Album Name | `TALB` |
 | `-y` | `<number>` | Modifies Year | `TYER` |
 | `-c` | `<string>` | Modifies Comment | `COMM` |
-| `-g` | `<string>` | Modifies Genre | `TCON` |
+| `-g`, `-m` | `<string>` | Modifies Genre / Music | `TCON` |
+| `-e` | *Modifier* | Edit flag prefix (e.g., `-e -t "Title" file.mp3`) | — |
+| `-v` | `<file.mp3>` | Views MP3 tag details | — |
+| `-V` | *None* | Prints application version info | — |
 | `-h`, `--help` | *None* | Displays command help and usage | — |
-| `-v`, `-V` | *None* | Displays application version info | — |
 
 ---
 
@@ -165,28 +169,80 @@ mp3tag -v | -V
 
 ### 1. Viewing Metadata
 ```bash
-$ ./mp3tag sample.mp3
-==================================================
-              MP3 TAG DETAILS
-==================================================
-File: sample.mp3
-Version: ID3v2.3
---------------------------------------------------
-Title   : Sunny Sunny
-Artist  : Yo Yo Honey Singh
-Album   : Yaariyan
-Track   : 1/10
-Year    : 2013
-Genre   : Pop (id 13)
-Comment : [Description: Comment] [Lang: eng] Downloaded From Internet
-APIC    : [image/jpeg] Cover (front), 45210 bytes
-==================================================
+$ ./mp3tag -v sample.mp3
++---------------------------------------------------------------------------------+
+|                              SELECTED VIEW DETAILS                              |
++---------------------------------------------------------------------------------+
+|                                                                                 |
+|                   MP3 TAG READER AND EDITOR FOR ID3v2                            |
+|                                                                                 |
++-------------------+-------------------------------------------------------------+
+| TAG NAME          | TAG VALUE                                                   |
++-------------------+-------------------------------------------------------------+
+| TITLE             | updated-name                                                |
+| ARTIST            | aniruth                                                     |
+| ALBUM             | new-albu                                                    |
+| YEAR              | 1999                                                        |
+| MUSIC             | kollywood                                                   |
+| COMMENT           | sample-download                                             |
++-------------------+-------------------------------------------------------------+
 ```
 
-### 2. Updating Artist and Title
+### 2. Updating Metadata
 ```bash
-./mp3tag -a "Coldplay" sample.mp3
-./mp3tag -t "Yellow" sample.mp3
+# Edit Title
+./mp3tag -e -t "Yellow" sample.mp3
+
+# Edit Artist
+./mp3tag -e -a "Coldplay" sample.mp3
+
+# Edit Album
+./mp3tag -e -A "Parachutes" sample.mp3
+
+# Edit Year
+./mp3tag -e -y "2000" sample.mp3
+
+# Edit Music / Genre
+./mp3tag -e -m "Alternative Rock" sample.mp3
+
+# Edit Comment
+./mp3tag -e -c "Great album" sample.mp3
+```
+
+### 3. Displaying Help & Error Messages
+```bash
+$ ./mp3tag
++-------------------------------------------------------------------------------+
+|                           ERROR: Missing arguments.                           |
++-------------------------------------------------------------------------------+
+|                                                                               |
+| USAGE:                                                                        |
+|   mp3tag -v [file.mp3]                                                        |
+|   mp3tag -[tTaAycg] "value" file1                                             |
+|   mp3tag -V                                                                   |
+|                                                                               |
++-------------------------------------------------------------------------------+
+
++-------------------------------------------------------------------------------+
+|                                   OPTIONS:                                    |
++-------------------------------------------------------------------------------+
+|   -t    Modifies a Title tag                                                  |
+|   -T    Modifies a Track tag                                                  |
+|   -a    Modifies an Artist tag                                                |
+|   -A    Modifies an Album tag                                                 |
+|   -y    Modifies a Year tag                                                   |
+|   -c    Modifies a Comment tag                                                |
+|   -g    Modifies a Genre tag                                                  |
+|   -h    Displays this help info                                               |
+|   -v    Views tag details                                                     |
+|   -V    Prints version info                                                   |
++-------------------------------------------------------------------------------+
+```
+
+### 4. Displaying Version Information
+```bash
+$ ./mp3tag -V
+MP3 Tag Reader and Editor version 1.0.0
 ```
 
 ---
